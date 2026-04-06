@@ -6,142 +6,110 @@ import { ExternalLink, Star } from 'lucide-react'
 gsap.registerPlugin(ScrollTrigger)
 
 const css = `
-  .proj-section {
-    padding: var(--section-padding);
-    max-width: 1200px;
-    margin: 0 auto;
-  }
   .proj-featured {
-    background: linear-gradient(135deg, rgba(0, 170, 255, 0.05), rgba(255, 170, 0, 0.05));
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: clamp(2rem, 4vw, 3rem);
-    margin-bottom: 3rem;
-    position: relative;
-    overflow: hidden;
+    border-radius: var(--radius-md);
+    padding: clamp(18px, 3vw, 30px);
+    background: linear-gradient(155deg, rgba(91, 168, 255, 0.13), rgba(255, 211, 138, 0.07));
+    margin-bottom: 1.3rem;
     opacity: 0;
-    transform: translateY(30px);
-  }
-  .proj-featured::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(to right, var(--accent-blue), var(--accent-gold));
+    transform: translateY(20px);
   }
   .proj-featured-label {
     font-family: var(--font-mono);
-    font-size: 0.65rem;
-    color: var(--accent-gold);
-    letter-spacing: 0.2em;
+    font-size: 0.66rem;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    margin-bottom: 1rem;
-    display: flex;
+    color: var(--accent-gold-strong);
+    display: inline-flex;
     align-items: center;
     gap: 6px;
+    margin-bottom: 0.7rem;
   }
   .proj-featured-title {
-    font-size: clamp(1.5rem, 3vw, 2.2rem);
-    font-weight: 800;
-    margin-bottom: 0.5rem;
-    letter-spacing: -0.02em;
+    font-size: clamp(1.4rem, 2.4vw, 2rem);
+    margin-bottom: 0.45rem;
   }
   .proj-featured-sub {
-    font-size: 0.95rem;
     color: var(--text-secondary);
-    margin-bottom: 2rem;
-    max-width: 600px;
-    line-height: 1.7;
+    max-width: 72ch;
+    margin-bottom: 1.1rem;
+    font-size: 0.95rem;
   }
   .proj-featured-stats {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    margin-bottom: 2rem;
-    max-width: 500px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 1rem;
+    max-width: 560px;
   }
-  .proj-stat-val {
-    font-size: clamp(1.8rem, 4vw, 2.5rem);
-    font-weight: 800;
+  .proj-stat {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(9, 14, 25, 0.5);
+    padding: 9px;
+  }
+  .proj-stat strong {
+    display: block;
     font-family: var(--font-mono);
-    color: var(--accent-blue);
-    line-height: 1;
+    font-size: 1.02rem;
+    color: var(--accent-blue-strong);
   }
-  .proj-stat-label {
-    font-size: 0.7rem;
+  .proj-stat span {
+    font-size: 0.67rem;
+    font-family: var(--font-mono);
     color: var(--text-muted);
-    margin-top: 4px;
-    font-family: var(--font-mono);
-    letter-spacing: 0.05em;
   }
   .proj-featured-arch {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(9, 14, 25, 0.5);
+    padding: 12px;
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    color: var(--text-muted);
-    line-height: 1.8;
-    padding: 1rem 1.5rem;
-    background: rgba(0,0,0,0.3);
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    max-width: 600px;
+    color: var(--text-secondary);
+    line-height: 1.65;
   }
-  .proj-featured-arch span {
-    color: var(--accent-blue);
-  }
+  .proj-featured-arch span { color: var(--accent-blue-strong); }
   .proj-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
   .proj-card {
-    background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-    cursor: default;
+    border-radius: 14px;
+    background: rgba(9, 14, 25, 0.45);
+    padding: 14px;
+    min-height: 178px;
     opacity: 0;
-    transform: translateY(20px);
-    position: relative;
-    overflow: hidden;
-  }
-  .proj-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--accent-blue);
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-    transform-origin: left;
+    transform: translateY(18px);
+    transition: border-color 0.2s ease, transform 0.2s ease;
   }
   .proj-card:hover {
-    border-color: var(--accent-blue);
-    transform: translateY(-4px) !important;
-    box-shadow: 0 8px 30px rgba(0, 170, 255, 0.08);
-  }
-  .proj-card:hover::before {
-    transform: scaleX(1);
+    border-color: var(--border-strong);
+    transform: translateY(-3px);
   }
   .proj-card-header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    margin-bottom: 0.8rem;
+    gap: 10px;
+    margin-bottom: 0.6rem;
   }
   .proj-card-title {
-    font-size: 1.05rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 640;
   }
+  .proj-card-link {
+    color: var(--text-muted);
+    display: inline-flex;
+  }
+  .proj-card-link:hover { color: var(--accent-blue-strong); }
   .proj-card-desc {
-    font-size: 0.85rem;
     color: var(--text-secondary);
-    line-height: 1.7;
-    margin-bottom: 1.2rem;
+    font-size: 0.86rem;
+    margin-bottom: 0.85rem;
   }
   .proj-card-tags {
     display: flex;
@@ -150,22 +118,15 @@ const css = `
   }
   .proj-card-tag {
     font-family: var(--font-mono);
-    font-size: 0.65rem;
-    padding: 3px 10px;
-    background: var(--bg-elevated);
-    border-radius: 4px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: rgba(18, 27, 47, 0.7);
     color: var(--text-muted);
-    letter-spacing: 0.03em;
+    font-size: 0.62rem;
+    letter-spacing: 0.04em;
+    padding: 4px 8px;
   }
-  .proj-card-link {
-    color: var(--text-muted);
-    transition: color 0.2s;
-  }
-  .proj-card-link:hover {
-    color: var(--accent-blue);
-  }
-  @media (max-width: 768px) {
-    .proj-featured-stats { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  @media (max-width: 900px) {
     .proj-grid { grid-template-columns: 1fr; }
   }
 `
@@ -216,95 +177,80 @@ export default function Projects() {
     const el = sectionRef.current
     if (!el) return
 
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduceMotion) {
+      gsap.set(el.querySelectorAll('.proj-featured, .proj-card'), { opacity: 1, y: 0 })
+      return
+    }
+
     gsap.to(el.querySelector('.proj-featured'), {
       opacity: 1,
       y: 0,
-      duration: 0.8,
+      duration: 0.65,
       ease: 'power3.out',
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 65%',
-      },
+      scrollTrigger: { trigger: el, start: 'top 72%' },
     })
 
     gsap.to(el.querySelectorAll('.proj-card'), {
       opacity: 1,
       y: 0,
-      duration: 0.6,
-      stagger: 0.1,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: el.querySelector('.proj-grid'),
-        start: 'top 75%',
-      },
+      duration: 0.5,
+      stagger: 0.07,
+      ease: 'power2.out',
+      scrollTrigger: { trigger: el.querySelector('.proj-grid'), start: 'top 80%' },
     })
   }, [])
 
   return (
     <>
       <style>{css}</style>
-      <section className="proj-section" id="projects" ref={sectionRef}>
-        <div className="section-label">Projects</div>
-        <h2 className="section-title">Things I&apos;ve Built</h2>
+      <section id="projects" ref={sectionRef}>
+        <div className="section-shell">
+          <div className="section-panel">
+            <div className="section-label">Projects</div>
+            <h2 className="section-title">Things I&apos;ve Built</h2>
 
-        <div className="proj-featured">
-          <div className="proj-featured-label">
-            <Star size={12} /> Flagship Project
-          </div>
-          <div className="proj-featured-title">OptiPro — Distributed Data Orchestrator</div>
-          <div className="proj-featured-sub">
-            A distributed data collection and orchestration platform built as an exploration into 
-            Kubernetes-native job scheduling, ephemeral worker pods, and browser automation at scale. 
-            Designed the entire architecture from scratch.
-          </div>
-
-          <div className="proj-featured-stats">
-            <div>
-              <div className="proj-stat-val">10+</div>
-              <div className="proj-stat-label">Data Sources</div>
-            </div>
-            <div>
-              <div className="proj-stat-val">2.6K</div>
-              <div className="proj-stat-label">Tracked Entities</div>
-            </div>
-            <div>
-              <div className="proj-stat-val">65K</div>
-              <div className="proj-stat-label">Events/Day</div>
-            </div>
-          </div>
-
-          <div className="proj-featured-arch">
-            <span>Architecture:</span> Master-Worker on Kubernetes<br/>
-            <span>Orchestrator:</span> TypeScript/Express singleton → cron scheduling → dynamic K8s Job creation<br/>
-            <span>Workers:</span> Ephemeral Puppeteer pods (1-4Gi RAM), session state persisted to cloud storage<br/>
-            <span>Quality:</span> Reconciliation engine with rolling averages, auto-retry, and data completeness checks
-          </div>
-        </div>
-
-        <div className="proj-grid">
-          {projects.map((p, i) => (
-            <div className="proj-card" key={i}>
-              <div className="proj-card-header">
-                <div className="proj-card-title">{p.title}</div>
-                {p.link && (
-                  <a href={p.link} target="_blank" rel="noopener noreferrer" className="proj-card-link">
-                    <ExternalLink size={16} />
-                  </a>
-                )}
+            <article className="proj-featured">
+              <div className="proj-featured-label"><Star size={12} /> Flagship Project</div>
+              <h3 className="proj-featured-title">OptiPro — Distributed Data Orchestrator</h3>
+              <p className="proj-featured-sub">
+                A distributed data collection and orchestration platform built as an exploration into Kubernetes-native job scheduling, ephemeral worker pods, and browser automation at scale. Designed the entire architecture from scratch.
+              </p>
+              <div className="proj-featured-stats">
+                <div className="proj-stat"><strong>10+</strong><span>Data Sources</span></div>
+                <div className="proj-stat"><strong>2.6K</strong><span>Tracked Entities</span></div>
+                <div className="proj-stat"><strong>65K</strong><span>Events/Day</span></div>
               </div>
-              <div className="proj-card-desc">{p.desc}</div>
-              <div className="proj-card-tags">
-                {p.tags.map((t) => (
-                  <span className="proj-card-tag" key={t}>{t}</span>
-                ))}
-                {p.stars && (
-                  <span className="proj-card-tag" style={{ color: 'var(--accent-gold)' }}>
-                    ★ {p.stars}
-                  </span>
-                )}
+              <div className="proj-featured-arch">
+                <span>Architecture:</span> Master-Worker on Kubernetes<br />
+                <span>Orchestrator:</span> TypeScript/Express singleton → cron scheduling → dynamic K8s Job creation<br />
+                <span>Workers:</span> Ephemeral Puppeteer pods (1-4Gi RAM), session state persisted to cloud storage<br />
+                <span>Quality:</span> Reconciliation engine with rolling averages, auto-retry, and data completeness checks
               </div>
+            </article>
+
+            <div className="proj-grid">
+              {projects.map((project, i) => (
+                <article className="proj-card" key={i}>
+                  <div className="proj-card-header">
+                    <h3 className="proj-card-title">{project.title}</h3>
+                    {project.link && (
+                      <a className="proj-card-link" href={project.link} target="_blank" rel="noopener noreferrer" aria-label={`Open ${project.title}`}>
+                        <ExternalLink size={16} />
+                      </a>
+                    )}
+                  </div>
+                  <p className="proj-card-desc">{project.desc}</p>
+                  <div className="proj-card-tags">
+                    {project.tags.map((tag) => (
+                      <span className="proj-card-tag" key={tag}>{tag}</span>
+                    ))}
+                    {project.stars && <span className="proj-card-tag">★ {project.stars}</span>}
+                  </div>
+                </article>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </section>
     </>

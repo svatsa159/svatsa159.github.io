@@ -7,88 +7,76 @@ import { ExternalLink, Mail } from 'lucide-react'
 gsap.registerPlugin(ScrollTrigger)
 
 const css = `
-  .contact-section {
-    padding: var(--section-padding);
-    min-height: 80vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    max-width: 800px;
+  .contact-wrap {
+    max-width: 860px;
     margin: 0 auto;
+    text-align: center;
+  }
+  .contact-banner {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: clamp(18px, 3vw, 30px);
+    background: linear-gradient(160deg, rgba(91, 168, 255, 0.12), rgba(255, 211, 138, 0.08));
+    opacity: 0;
+    transform: translateY(20px);
   }
   .contact-pretext {
-    margin-bottom: 3rem;
-    opacity: 0;
+    margin-bottom: 1.2rem;
+    min-height: 70px;
   }
   .contact-pretext canvas {
     max-width: 100%;
+    height: auto;
   }
   .contact-heading {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 800;
+    font-size: clamp(1.8rem, 4vw, 3rem);
     letter-spacing: -0.03em;
-    margin-bottom: 1rem;
-    opacity: 0;
+    margin-bottom: 0.7rem;
   }
-  .contact-heading .gold { color: var(--accent-gold); }
+  .contact-heading .gold { color: var(--accent-gold-strong); }
   .contact-sub {
-    font-size: clamp(0.9rem, 1.3vw, 1.1rem);
     color: var(--text-secondary);
-    margin-bottom: 3rem;
-    line-height: 1.8;
-    opacity: 0;
+    max-width: 62ch;
+    margin: 0 auto 1.2rem;
   }
   .contact-links {
     display: flex;
-    gap: 1.5rem;
     flex-wrap: wrap;
     justify-content: center;
-    opacity: 0;
+    gap: 9px;
   }
   .contact-link {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 24px;
+    gap: 8px;
     border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text-secondary);
+    border-radius: 999px;
+    padding: 9px 12px;
     font-family: var(--font-mono);
-    font-size: 0.8rem;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    letter-spacing: 0.03em;
+    font-size: 0.67rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    background: rgba(9, 14, 25, 0.6);
   }
   .contact-link:hover {
-    border-color: var(--accent-blue);
-    color: var(--accent-blue);
-    background: var(--accent-blue-dim);
-    transform: translateY(-2px);
+    color: var(--text-primary);
+    border-color: var(--border-strong);
   }
   .contact-footer {
-    margin-top: 6rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border);
-    width: 100%;
-    opacity: 0;
-  }
-  .contact-footer-text {
+    margin-top: 1rem;
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.66rem;
     color: var(--text-muted);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
   }
-  .contact-footer-text .blue { color: var(--accent-blue); }
 `
 
 const links = [
-  { icon: <ExternalLink size={18} />, label: 'GitHub: svatsa159', url: 'https://github.com/svatsa159' },
-  { icon: <ExternalLink size={18} />, label: '@svatsa159', url: 'https://instagram.com/svatsa159' },
-  { icon: <ExternalLink size={18} />, label: 'Letterboxd', url: 'https://letterboxd.com/svatsa159' },
-  { icon: <ExternalLink size={18} />, label: 'LinkedIn', url: '#' },
-  { icon: <Mail size={18} />, label: 'Email', url: 'mailto:srivatsa.rampalli@example.com' },
+  { icon: <ExternalLink size={16} />, label: 'GitHub: svatsa159', url: 'https://github.com/svatsa159' },
+  { icon: <ExternalLink size={16} />, label: 'Instagram @svatsa159', url: 'https://instagram.com/svatsa159' },
+  { icon: <ExternalLink size={16} />, label: 'Letterboxd', url: 'https://letterboxd.com/svatsa159' },
+  { icon: <Mail size={16} />, label: 'Email', url: 'mailto:svatsa159@gmail.com' },
 ]
 
 export default function Contact() {
@@ -96,7 +84,6 @@ export default function Contact() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [canvasReady, setCanvasReady] = useState(false)
 
-  // Pretext creative text rendering
   const renderPretext = useCallback(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -105,105 +92,112 @@ export default function Contact() {
     if (!ctx) return
 
     const dpr = window.devicePixelRatio || 1
-    const text = "Jack of All Trades, Master of Getting Shit Done."
+    const text = 'Jack of All Trades, Master of Getting Shit Done.'
     const font = '700 24px Inter, sans-serif'
-    const maxWidth = Math.min(600, window.innerWidth - 80)
+    const maxWidth = Math.min(650, window.innerWidth - 90)
 
     canvas.style.width = `${maxWidth}px`
-    canvas.width = maxWidth * dpr
-    
+    canvas.width = Math.floor(maxWidth * dpr)
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0)
+
     try {
       const prepared = prepareWithSegments(text, font)
-      const result = layoutWithLines(prepared, maxWidth * dpr, 36 * dpr)
+      const result = layoutWithLines(prepared, maxWidth * dpr, 38 * dpr)
 
-      canvas.style.height = `${result.height / dpr + 20}px`
-      canvas.height = (result.height + 20 * dpr)
+      canvas.height = Math.floor(result.height + 26 * dpr)
+      canvas.style.height = `${canvas.height / dpr}px`
 
-      ctx.scale(dpr, dpr)
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr)
 
       result.lines.forEach((line, i) => {
-        const y = 28 + i * 36
-        // Draw each line with color effect
         ctx.font = font
-        if (i === 0) {
-          ctx.fillStyle = '#f0f0f0'
-        } else {
-          ctx.fillStyle = '#ffaa00'
-        }
-        ctx.fillText(line.text, 0, y)
+        ctx.fillStyle = i === 0 ? '#e9edf8' : '#ffd38a'
+        const lineWidth = ctx.measureText(line.text).width
+        const x = Math.max(0, (maxWidth - lineWidth) / 2)
+        ctx.fillText(line.text, x, 30 + i * 34)
       })
       setCanvasReady(true)
     } catch {
-      // Fallback: just draw the text normally
-      canvas.style.height = '80px'
-      canvas.height = 80 * dpr
-      ctx.scale(dpr, dpr)
+      canvas.height = Math.floor(84 * dpr)
+      canvas.style.height = '84px'
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr)
       ctx.font = font
-      ctx.fillStyle = '#ffaa00'
-      ctx.fillText(text, 0, 40)
+      ctx.fillStyle = '#ffd38a'
+      const textWidth = ctx.measureText(text).width
+      const x = Math.max(0, (maxWidth - textWidth) / 2)
+      ctx.fillText(text, x, 40)
       setCanvasReady(true)
     }
   }, [])
 
   useEffect(() => {
-    // Delay to ensure font is loaded
-    const timeout = setTimeout(renderPretext, 500)
-    return () => clearTimeout(timeout)
+    const timeout = window.setTimeout(renderPretext, 350)
+    window.addEventListener('resize', renderPretext)
+    return () => {
+      window.clearTimeout(timeout)
+      window.removeEventListener('resize', renderPretext)
+    }
   }, [renderPretext])
 
   useEffect(() => {
     const el = sectionRef.current
     if (!el) return
 
-    const tl = gsap.timeline({
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const banner = el.querySelector('.contact-banner')
+    if (reduceMotion) {
+      gsap.set(banner, { opacity: 1, y: 0 })
+      return
+    }
+
+    gsap.to(banner, {
+      opacity: 1,
+      y: 0,
+      duration: 0.68,
+      ease: 'power3.out',
       scrollTrigger: {
         trigger: el,
-        start: 'top 65%',
+        start: 'top 76%',
       },
     })
-
-    tl.to(el.querySelector('.contact-pretext'), { opacity: 1, duration: 0.6 })
-      .to(el.querySelector('.contact-heading'), { opacity: 1, duration: 0.5 }, '-=0.3')
-      .to(el.querySelector('.contact-sub'), { opacity: 1, duration: 0.5 }, '-=0.2')
-      .to(el.querySelector('.contact-links'), { opacity: 1, duration: 0.5 }, '-=0.2')
-      .to(el.querySelector('.contact-footer'), { opacity: 1, duration: 0.5 }, '-=0.1')
   }, [])
 
   return (
     <>
       <style>{css}</style>
-      <section className="contact-section" id="contact" ref={sectionRef}>
-        <div className="contact-pretext" style={{ opacity: 0, minHeight: canvasReady ? 'auto' : '60px' }}>
-          <canvas ref={canvasRef} />
-        </div>
-
-        <h2 className="contact-heading" style={{ opacity: 0 }}>
-          Let&apos;s <span className="gold">Build</span> Something
-        </h2>
-        <p className="contact-sub" style={{ opacity: 0 }}>
-          Whether it&apos;s a distributed system, a production Kubernetes platform, 
-          or just a conversation about the best pasta shape — I&apos;m all in.
-        </p>
-
-        <div className="contact-links" style={{ opacity: 0 }}>
-          {links.map((link, i) => (
-            <a
-              key={i}
-              href={link.url}
-              target={link.url.startsWith('http') ? '_blank' : undefined}
-              rel="noopener noreferrer"
-              className="contact-link"
-            >
-              {link.icon}
-              {link.label}
-            </a>
-          ))}
-        </div>
-
-        <div className="contact-footer" style={{ opacity: 0 }}>
-          <div className="contact-footer-text">
-            Designed & built with <span className="blue">React</span> + <span className="blue">GSAP</span> + <span className="blue">Pretext</span> — by Srivatsa Rampalli © 2026
+      <section id="contact" ref={sectionRef}>
+        <div className="section-shell">
+          <div className="contact-wrap">
+            <div className="contact-banner">
+              <div className="contact-pretext" style={{ opacity: canvasReady ? 1 : 0.6 }}>
+                <canvas ref={canvasRef} />
+              </div>
+              <h2 className="contact-heading">Let&apos;s <span className="gold">Build</span> Something</h2>
+              <p className="contact-sub">
+                Whether it&apos;s a distributed system, a production Kubernetes platform, or just a conversation about the best pasta shape — I&apos;m all in.
+              </p>
+              <div className="contact-links">
+                {links.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.url}
+                    target={link.url.startsWith('http') ? '_blank' : undefined}
+                    rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    className="contact-link"
+                  >
+                    {link.icon}
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+              <div className="contact-footer">
+                Designed & built with React + GSAP + Pretext — by Srivatsa Rampalli © 2026
+              </div>
+            </div>
           </div>
         </div>
       </section>

@@ -5,98 +5,75 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const css = `
-  .about-section {
-    padding: var(--section-padding);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-  }
   .about-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(40px, 6vw, 100px);
-    align-items: start;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(22px, 4vw, 54px);
   }
-  .about-left {
-    position: relative;
-  }
-  .about-left .big-quote {
-    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-    font-weight: 800;
-    line-height: 1.2;
+  .about-quote {
+    font-size: clamp(1.6rem, 3vw, 2.5rem);
+    line-height: 1.22;
     letter-spacing: -0.02em;
-    margin-bottom: 2rem;
+    margin-bottom: 1.6rem;
   }
-  .about-left .big-quote .highlight-blue {
-    color: var(--accent-blue);
+  .about-quote .blue { color: var(--accent-blue-strong); }
+  .about-quote .gold { color: var(--accent-gold-strong); }
+  .about-narrative {
+    display: grid;
+    gap: 1rem;
   }
-  .about-left .big-quote .highlight-gold {
-    color: var(--accent-gold);
+  .about-narrative p {
+    color: var(--text-secondary);
+    font-size: clamp(0.93rem, 1.35vw, 1.03rem);
+  }
+  .about-narrative strong {
+    color: var(--text-primary);
+    font-weight: 640;
   }
   .about-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    margin-top: 2.5rem;
-    padding-top: 2.5rem;
+    margin-top: 1.8rem;
+    padding-top: 1.4rem;
     border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
   }
-  .about-stat-number {
-    font-size: clamp(1.5rem, 3vw, 2.2rem);
-    font-weight: 800;
-    color: var(--accent-blue);
+  .about-stat {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(9, 14, 25, 0.45);
+    padding: 12px;
+  }
+  .about-stat strong {
+    display: block;
     font-family: var(--font-mono);
+    color: var(--accent-blue-strong);
+    font-size: clamp(1rem, 1.5vw, 1.3rem);
   }
-  .about-stat-label {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    margin-top: 4px;
+  .about-stat span {
     font-family: var(--font-mono);
-    letter-spacing: 0.05em;
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
   }
-  .about-right {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-  .about-right p {
-    font-size: clamp(0.9rem, 1.3vw, 1.05rem);
-    color: var(--text-secondary);
-    line-height: 1.8;
-  }
-  .about-right p strong {
-    color: var(--text-primary);
-    font-weight: 600;
-  }
-  .about-tag-row {
+  .about-tags {
+    margin-top: 1.1rem;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: 1rem;
   }
   .about-tag {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
-    padding: 6px 14px;
-    border-radius: 100px;
     border: 1px solid var(--border);
+    border-radius: 999px;
     color: var(--text-secondary);
+    font-size: 0.66rem;
+    padding: 6px 10px;
     letter-spacing: 0.05em;
-    transition: all 0.3s ease;
+    text-transform: uppercase;
   }
-  .about-tag:hover {
-    border-color: var(--accent-blue);
-    color: var(--accent-blue);
-    background: var(--accent-blue-dim);
-  }
-  @media (max-width: 768px) {
+  @media (max-width: 900px) {
     .about-grid { grid-template-columns: 1fr; }
-    .about-stats { grid-template-columns: repeat(3, 1fr); }
   }
 `
 
@@ -107,18 +84,24 @@ export default function About() {
     const el = sectionRef.current
     if (!el) return
 
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const items = el.querySelectorAll('.about-anim')
-    gsap.set(items, { opacity: 0, y: 40 })
+
+    if (reduceMotion) {
+      gsap.set(items, { opacity: 1, y: 0 })
+      return
+    }
+
+    gsap.set(items, { opacity: 0, y: 28 })
     gsap.to(items, {
       opacity: 1,
       y: 0,
-      duration: 0.8,
-      stagger: 0.15,
+      duration: 0.65,
+      stagger: 0.1,
       ease: 'power3.out',
       scrollTrigger: {
         trigger: el,
-        start: 'top 70%',
-        toggleActions: 'play none none none',
+        start: 'top 72%',
       },
     })
   }, [])
@@ -126,50 +109,33 @@ export default function About() {
   return (
     <>
       <style>{css}</style>
-      <section className="about-section" id="about" ref={sectionRef}>
-        <div className="about-grid">
-          <div className="about-left">
+      <section id="about" ref={sectionRef}>
+        <div className="section-shell">
+          <div className="section-panel">
             <div className="section-label about-anim">About</div>
-            <div className="big-quote about-anim">
-              A <span className="highlight-blue">mechanical engineer</span> who never went to a mech class. Now a{' '}
-              <span className="highlight-gold">Tech Lead</span> who architects distributed systems by day and
-              cooks fresh pasta by night.
-            </div>
-
-            <div className="about-stats about-anim">
+            <div className="about-grid">
               <div>
-                <div className="about-stat-number">6+</div>
-                <div className="about-stat-label">Years shipping production code</div>
+                <div className="about-quote about-anim">
+                  A <span className="blue">mechanical engineer</span> who never went to a mech class. Now a <span className="gold">Tech Lead</span> who architects distributed systems by day and cooks fresh pasta by night.
+                </div>
+                <div className="about-stats about-anim">
+                  <div className="about-stat"><strong>6+</strong><span>Years shipping production code</span></div>
+                  <div className="about-stat"><strong>3</strong><span>Years to Tech Lead</span></div>
+                  <div className="about-stat"><strong>65K</strong><span>Orders/day on side project</span></div>
+                </div>
               </div>
-              <div>
-                <div className="about-stat-number">3</div>
-                <div className="about-stat-label">Years to Tech Lead</div>
-              </div>
-              <div>
-                <div className="about-stat-number">65K</div>
-                <div className="about-stat-label">Orders/day on his side project</div>
-              </div>
-            </div>
-          </div>
 
-          <div className="about-right">
-            <p className="about-anim">
-              <strong>BITS Pilani, Class of 2020.</strong> Mechanical Engineering on paper. Zero attendance in mech classes — thanks to a magical zero-attendance policy. Instead? CS electives, coding club, and building things that actually shipped.
-            </p>
-            <p className="about-anim">
-              Met his wife <strong>Diksha</strong> in a Bhagavad Gita humanities elective. His alma mater became his sasural. Life writes better plots than any code.
-            </p>
-            <p className="about-anim">
-              <strong>ADHD isn&apos;t a bug — it&apos;s a feature.</strong> It means going 0 to deep-expertise on anything that catches his eye. The result? A portfolio spanning banking compliance systems, distributed scraping platforms, AI memory engines, 3D games, cinematography, and hand-drawn icon libraries.
-            </p>
-            <p className="about-anim">
-              <strong>&ldquo;There is not one single language or anything that can stop me.&rdquo;</strong>
-            </p>
-
-            <div className="about-tag-row about-anim">
-              {['Builder', 'Cinematographer', 'Cook', 'Singer', 'Film Critic', 'Mentor', 'Traveler', 'Tinkerer'].map((t) => (
-                <span className="about-tag" key={t}>{t}</span>
-              ))}
+              <div className="about-narrative">
+                <p className="about-anim"><strong>BITS Pilani, Class of 2020.</strong> Mechanical Engineering on paper. Zero attendance in mech classes — thanks to a magical zero-attendance policy. Instead? CS electives, coding club, and building things that actually shipped.</p>
+                <p className="about-anim">Met his wife <strong>Diksha</strong> in a Bhagavad Gita humanities elective. His alma mater became his sasural. Life writes better plots than any code.</p>
+                <p className="about-anim"><strong>ADHD isn&apos;t a bug — it&apos;s a feature.</strong> It means going 0 to deep-expertise on anything that catches his eye. The result? A portfolio spanning banking compliance systems, distributed scraping platforms, AI memory engines, 3D games, cinematography, and hand-drawn icon libraries.</p>
+                <p className="about-anim"><strong>&ldquo;There is not one single language or anything that can stop me.&rdquo;</strong></p>
+                <div className="about-tags about-anim">
+                  {['Builder', 'Cinematographer', 'Cook', 'Singer', 'Film Critic', 'Mentor', 'Traveler', 'Tinkerer'].map((tag) => (
+                    <span key={tag} className="about-tag">{tag}</span>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
