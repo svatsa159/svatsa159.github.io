@@ -212,7 +212,7 @@ export default function Projects() {
 
             <article className="proj-featured">
               <div className="proj-featured-label"><Star size={12} /> Flagship Project</div>
-              <h3 className="proj-featured-title">OptiPro — Distributed Data Orchestrator</h3>
+              <h3 className="proj-featured-title">DDO — Distributed Data Orchestrator</h3>
               <p className="proj-featured-sub">
                 A distributed data collection and orchestration platform built as an exploration into Kubernetes-native job scheduling, ephemeral worker pods, and browser automation at scale. Designed the entire architecture from scratch.
               </p>
