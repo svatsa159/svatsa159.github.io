@@ -25,8 +25,10 @@ const css = `
     min-height: 70px;
   }
   .contact-pretext canvas {
+    display: block;
     max-width: 100%;
     height: auto;
+    margin-inline: auto;
   }
   .contact-heading {
     font-size: clamp(1.8rem, 4vw, 3rem);
@@ -92,9 +94,14 @@ export default function Contact() {
     if (!ctx) return
 
     const dpr = window.devicePixelRatio || 1
+    const isMobile = window.innerWidth <= 640
     const text = 'Jack of All Trades, Master of Getting Shit Done.'
-    const font = '700 24px Inter, sans-serif'
-    const maxWidth = Math.min(650, window.innerWidth - 90)
+    const mobileLines = ['Jack of All Trades,', 'Master of', 'Getting Shit Done.']
+    const fontSize = isMobile ? 28 : 24
+    const font = `700 ${fontSize}px Inter, sans-serif`
+    const lineHeight = Math.round(fontSize * (isMobile ? 1.18 : 1.3))
+    const horizontalPadding = isMobile ? 34 : 90
+    const maxWidth = Math.min(650, window.innerWidth - horizontalPadding)
 
     canvas.style.width = `${maxWidth}px`
     canvas.width = Math.floor(maxWidth * dpr)
@@ -102,10 +109,18 @@ export default function Contact() {
     ctx.setTransform(1, 0, 0, 1, 0, 0)
 
     try {
-      const prepared = prepareWithSegments(text, font)
-      const result = layoutWithLines(prepared, maxWidth * dpr, 38 * dpr)
+      const result = isMobile
+        ? { lines: mobileLines.map((line) => ({ text: line })) }
+        : layoutWithLines(prepareWithSegments(text, font), maxWidth * dpr, lineHeight * dpr)
 
-      canvas.height = Math.floor(result.height + 26 * dpr)
+      ctx.font = font
+      const metrics = ctx.measureText('Mg')
+      const ascent = Math.max(metrics.actualBoundingBoxAscent || fontSize * 0.78, fontSize * 0.78)
+      const descent = Math.max(metrics.actualBoundingBoxDescent || fontSize * 0.24, fontSize * 0.24)
+      const topPadding = Math.max(12, Math.round(fontSize * 0.45))
+      const bottomPadding = Math.max(12, Math.round(fontSize * 0.38))
+
+      canvas.height = Math.floor((topPadding + ascent + Math.max(0, result.lines.length - 1) * lineHeight + descent + bottomPadding) * dpr)
       canvas.style.height = `${canvas.height / dpr}px`
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
@@ -116,12 +131,15 @@ export default function Contact() {
         ctx.fillStyle = i === 0 ? '#e9edf8' : '#ffd38a'
         const lineWidth = ctx.measureText(line.text).width
         const x = Math.max(0, (maxWidth - lineWidth) / 2)
-        ctx.fillText(line.text, x, 30 + i * 34)
+        ctx.textAlign = 'left'
+        ctx.fillText(line.text, x, topPadding + ascent + i * lineHeight)
       })
       setCanvasReady(true)
     } catch {
-      canvas.height = Math.floor(84 * dpr)
-      canvas.style.height = '84px'
+      const fallbackHeight = Math.round(fontSize * 2.9)
+      const baseline = Math.round(fontSize * 1.55)
+      canvas.height = Math.floor(fallbackHeight * dpr)
+      canvas.style.height = `${fallbackHeight}px`
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr)
@@ -129,7 +147,7 @@ export default function Contact() {
       ctx.fillStyle = '#ffd38a'
       const textWidth = ctx.measureText(text).width
       const x = Math.max(0, (maxWidth - textWidth) / 2)
-      ctx.fillText(text, x, 40)
+      ctx.fillText(text, x, baseline)
       setCanvasReady(true)
     }
   }, [])

@@ -104,6 +104,7 @@ const css = `
   }
 
   .agent-letter-pretext canvas {
+    display: block;
     max-width: 100%;
     height: auto;
     filter: drop-shadow(0 8px 18px rgba(104, 58, 18, 0.1));
@@ -202,9 +203,14 @@ export default function AgentLetter() {
     if (!ctx) return
 
     const dpr = window.devicePixelRatio || 1
+    const isMobile = window.innerWidth <= 640
     const text = 'What my agent thinks about me'
-    const font = "700 32px 'Iowan Old Style', 'Palatino Linotype', Georgia, serif"
-    const maxWidth = Math.min(720, window.innerWidth - 110)
+    const mobileLines = ['What my agent thinks', 'about me']
+    const fontSize = isMobile ? 24 : 32
+    const font = `700 ${fontSize}px 'Iowan Old Style', 'Palatino Linotype', Georgia, serif`
+    const lineHeight = Math.round(fontSize * 1.24)
+    const horizontalPadding = isMobile ? 60 : 110
+    const maxWidth = Math.min(720, window.innerWidth - horizontalPadding)
 
     canvas.style.width = `${maxWidth}px`
     canvas.width = Math.floor(maxWidth * dpr)
@@ -212,10 +218,18 @@ export default function AgentLetter() {
     ctx.setTransform(1, 0, 0, 1, 0, 0)
 
     try {
-      const prepared = prepareWithSegments(text, font)
-      const result = layoutWithLines(prepared, maxWidth * dpr, 46 * dpr)
+      const result = isMobile
+        ? { lines: mobileLines.map((line) => ({ text: line })) }
+        : layoutWithLines(prepareWithSegments(text, font), maxWidth * dpr, lineHeight * dpr)
 
-      canvas.height = Math.floor(result.height + 24 * dpr)
+      ctx.font = font
+      const metrics = ctx.measureText('Mg')
+      const ascent = Math.max(metrics.actualBoundingBoxAscent || fontSize * 0.78, fontSize * 0.78)
+      const descent = Math.max(metrics.actualBoundingBoxDescent || fontSize * 0.26, fontSize * 0.26)
+      const topPadding = Math.max(14, Math.round(fontSize * 0.45))
+      const bottomPadding = Math.max(12, Math.round(fontSize * 0.38))
+
+      canvas.height = Math.floor((topPadding + ascent + Math.max(0, result.lines.length - 1) * lineHeight + descent + bottomPadding) * dpr)
       canvas.style.height = `${canvas.height / dpr}px`
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
@@ -226,13 +240,15 @@ export default function AgentLetter() {
         ctx.fillStyle = index === 0 ? '#3f2412' : '#7a451b'
         ctx.shadowColor = 'rgba(255,255,255,0.18)'
         ctx.shadowBlur = 10
-        ctx.fillText(line.text, 0, 36 + index * 40)
+        ctx.fillText(line.text, 0, topPadding + ascent + index * lineHeight)
       })
       ctx.shadowBlur = 0
       setCanvasReady(true)
     } catch {
-      canvas.height = Math.floor(82 * dpr)
-      canvas.style.height = '82px'
+      const fallbackHeight = Math.round(fontSize * 2.8)
+      const baseline = Math.round(fontSize * 1.45)
+      canvas.height = Math.floor(fallbackHeight * dpr)
+      canvas.style.height = `${fallbackHeight}px`
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr)
@@ -240,7 +256,7 @@ export default function AgentLetter() {
       ctx.fillStyle = '#3f2412'
       ctx.shadowColor = 'rgba(255,255,255,0.18)'
       ctx.shadowBlur = 10
-      ctx.fillText(text, 0, 46)
+      ctx.fillText(text, 0, baseline)
       ctx.shadowBlur = 0
       setCanvasReady(true)
     }

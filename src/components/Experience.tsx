@@ -14,11 +14,19 @@ const css = `
     margin-bottom: 1.3rem;
   }
   .exp-timeline {
-    border-left: 1px dashed var(--border-strong);
-    padding-left: clamp(18px, 3vw, 30px);
-    margin-left: 10px;
+    --timeline-axis: 10px;
+    position: relative;
+    padding-left: calc(var(--timeline-axis) + clamp(18px, 3vw, 30px));
     display: grid;
     gap: 18px;
+  }
+  .exp-timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--timeline-axis);
+    border-left: 1px dashed var(--border-strong);
   }
   .exp-item {
     position: relative;
@@ -36,7 +44,7 @@ const css = `
     border-radius: 50%;
     border: 2px solid var(--accent-blue);
     position: absolute;
-    left: -37px;
+    left: calc((var(--timeline-axis) + clamp(18px, 3vw, 30px)) * -1 + var(--timeline-axis) - 6px);
     top: 18px;
     background: var(--bg);
   }
@@ -101,7 +109,10 @@ const css = `
     padding: 5px 10px;
   }
   @media (max-width: 768px) {
-    .exp-item::before { left: -33px; }
+    .exp-timeline {
+      --timeline-axis: 8px;
+      padding-left: calc(var(--timeline-axis) + 18px);
+    }
   }
 `
 
