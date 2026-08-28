@@ -669,6 +669,29 @@ a {
   text-transform: uppercase;
 }
 
+.project-link-row {
+  margin-top: 2px;
+}
+
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono-tech);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hazard);
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+}
+
+.project-link:hover,
+.project-link:focus-visible {
+  color: var(--ink);
+  outline: none;
+}
+
 .project-stack {
   border-top: 1px solid var(--ink);
   padding-top: 8px;

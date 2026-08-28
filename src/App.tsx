@@ -20,6 +20,7 @@ type ProjectItem = {
   detail: string
   stack: string
   metrics?: string
+  link?: string
 }
 
 type SkillGroup = {
@@ -76,6 +77,14 @@ const timeline: TimelineItem[] = [
 const migrations = ['JDK 8 -> 21', 'JENKINS -> GITHUB ACTIONS', 'INTERNAL REPO -> JFROG']
 
 const projects: ProjectItem[] = [
+  {
+    name: 'VGPU.SH // SHOWCASE CONCEPT',
+    detail:
+      'A cinematic concept page for vgpu.sh that reframes the product as an agent-native WebGPU execution surface: browser canvas, headless Node.js, video export, CI artifacts, examples API, and MCP-driven discovery.',
+    stack: 'UI DIRECTION, WEBGPU, AGENT EXPERIENCE, CREATIVE PROTOTYPING',
+    metrics: 'LIVE CONCEPT PAGE | PORTFOLIO-HOSTED PREVIEW',
+    link: '/vgpu-showcase/index.html',
+  },
   {
     name: 'DDO // DISTRIBUTED DATA ORCHESTRATOR',
     detail:
@@ -575,6 +584,13 @@ function App() {
                     <h3>{project.name}</h3>
                     {project.metrics && <p className="project-metrics">{project.metrics}</p>}
                     <p>{project.detail}</p>
+                    {project.link && (
+                      <p className="project-link-row">
+                        <a className="project-link" href={project.link} target="_blank" rel="noreferrer">
+                          OPEN LIVE CONCEPT ↗
+                        </a>
+                      </p>
+                    )}
                     <p className="project-stack">
                       <samp>{project.stack}</samp>
                     </p>
